@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>xRocket Карта</title>
+<style> 
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #17212b;
+}
+.screen {
+    display: none;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+    #price_usdt {
+          color: #17212b;
+          display: none;
+    }
+    
+.active { display: block; }
+
+#pay_title {
+  display: none;
+}
+
+#promo_input::placeholder {
+    color: #6ab2f2;
+    text-transform: uppercase;
+    opacity: 1;
+}
+
+#slideshow-container {
+    position: relative;
+    width: 80vw;
+    max-width: 400px;
+    height: 60vw;
+    max-height: 300px;
+    margin: 20px auto;
+}
+
+.gold-glow {
+    color: #ffdd77 !important;
+    text-shadow:
+        0 0 6px #ffdd77,
+        0 0 12px #ffbb22,
+        0 0 20px #ffaa00;
+    transition: 0.3s ease;
+}
+
+.tooltip-glass {
+    position: fixed;
+    left: 50%;
+    width: 65vw;
+    top: 40%;
+    transform: translateX(-50%);
+    padding: 10px 10px;
+    border-radius: 4px;
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    font-size: 14px;
+    animation: fadeIn 0.25s ease;
+    z-index: 99999;
+    text-align: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -20px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    opacity: 0.9;
+    border-radius: 2px;
+}
+
+.glass-status-btn {
+    padding: 2px;
+    width: 65vw;
+    max-width: 65vw;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-status-btn::after {
+    content: "";
+    position: absolute;
+    top: -150%;
+    left: -150%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(
+        45deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.6) 25%,
+        rgba(255,255,255,0) 55%
+    );
+    transform: rotate(15deg);
+    animation: shine-move 3s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes shine-move {
+    from { transform: translateX(-100%) rotate(15deg); }
+    to   { transform: translateX(100%) rotate(15deg); }
+}
+
+.slide {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    transform-origin: center center;
+}
+
+.slide.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.slide.out {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.1);
+}
+
+.button {
+    width: 75vw;
+    margin: 20px auto 0;
+    padding: 15px;
+    font-size: 18px;
+    text-align: center;
+    background: #2f6ea5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    display: block;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    color: #fff;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    width: 250px;
+    padding: 10px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    position: fixed;
+    top: 55%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.7s, transform 0.7s;
+}
+
+.tooltip.show .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.qr-glow-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.option {
+    background: #253648;
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 15px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.option img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+}
+
+.desc {
+    font-size: 13px;
+    margin-top: 4px;
+    color: white;
+}
+
+#loader {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #17212b;
+    display: none;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+}
+
+#payment {
+    font-size: 15px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+#payment.active {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.address-box {
+    max-width: 70vw;
+    padding: 12px;
+    border: 2px dashed #6ab2f2;
+    border-radius: 4px;
+    word-wrap: break-word;
+    text-align: center;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.copied {
+    background: #6ab2f2;
+    border-color: #00aa00;
+    transition: 1s;
+}
+
+#currency {
+    width: 65vw;
+    padding: 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    margin-bottom:10px;
+    border: 1px solid #6ab2f2;
+    background: #17212b;
+    color: #6ab2f2;
+    outline: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%236ab2f2" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+</style>
+</head>
+<body>
+
+<div id="loader"><img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Hourglass%20Not%20Done.webp?raw=true" style="width:200px;"></div>
+
+<!-- SCREEN 1 -->
+<div id="welcome" class="screen active" style="text-align:center;">
+    <div style="width:100%; text-align:center;">
+        <br><br><br>
+        <div id="slideshow-container">
+            <img class="slide active" src="https://github.com/HuntersNetPlus/MaxSwap/blob/main/ezgif-2f741f597f8b45c4.png?raw=true">
+            <img class="slide" src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Purse.webp?raw=true">
+            <img class="slide" src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Shopping%20Cart.webp?raw=true">
+        </div>
+    </div>
+    
+    <div style="text-align:center; color:white">
+        <div style="color:#6ab2f2"><b>Откройте мир без границ с xRocket!</b></div><br>
+        Совершайте покупке в интернете, оплачивайте подписки, храните и переводите средства в любой валюте! <p><b>Быстро, анонимно и без скрытых комиссий.</b></p>
+    </div>
+    <button class="button" id="welcomeBtn">Открыть xRocket Карту</button>
+</div>
+
+<!-- SCREEN 2 -->
+<div id="choose" class="screen">
+    <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Identification%20Card.webp?raw=true" style="width:200px; display:block; margin:0 auto;">
+    
+    <div style="text-align:center; color:white; font-weight:bold;">
+        Выберите тип карты для выпуска:
+    </div>
+    
+    <div class="option" data-name="xRocket Online Card" data-price="52.5">
+        <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Laptop.webp?raw=true" alt="">
+        <div>
+            <div style="color:#6ab2f2">xRocket Online Card - 52.5 USDT</div>
+            <div class="desc">Подойдёт для покупок в интернете, подписок, оплаты онлайн-сервисов (Netflix, ChatGPT, Spotify и тд.)</div>
+        </div>
+    </div>
+
+    <div class="option" data-name="xRocket NFC Card" data-price="52.5">
+        <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Shopping%20Cart.webp?raw=true" alt="">
+        <div>
+            <div style="color:#6ab2f2">xRocket NFC Card - 52.5 USDT</div>
+            <div class="desc">Подойдёт для привязки к GooglePay/ApplePay и оплаты через NFC-терминалы.</div>
+        </div>
+    </div>
+
+    <div class="option" data-name="xRocket Ultima" data-price="99">
+        <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Symbols/New%20Button.webp?raw=true" alt="">
+        <div>
+            <div style="color:#6ab2f2">xRocket Ultima - 99 USDT</div>
+            <div class="desc">Комбинация двух предыдущих пунктов. Карта подойдёт для любых целей.</div>
+        </div>
+    </div>
+</div>
+
+<!-- SCREEN 3 -->
+<div id="payment" class="screen">
+    <b id="pay_title">Выпуск xRocket Карты</b>
+    <img src="https://github.com/HuntersNetPlus/MaxSwap/blob/main/ezgif-7e232c37d2a67cfd.webp?raw=true" style="width:300px; position: relative; top: 15px; z-index: 2;">
+    <div style="color:#6ab2f2; width:80%; margin:0 auto; text-align:center; margin-bottom:7px; margin-top: -10px; z-index: 2;">
+
+         
+  <b id="price_usdt"></b> 
+    
+    </div>
+    
+    <div style="color: #6ab2f2; position: relative; top: 10px; z-index: 2; background: #17212b; padding: 0 4px; font-size: 15px; margin-top: -10px;">Выберите валюту для оплаты:</div>
+    <select id="currency">
+        <option value="USDT_TRC20">USDT TRC-20</option>
+        <option value="USDT_ERC20">USDT ERC-20</option>
+        <option value="USDC">USDC ERC-20</option>
+        <option value="USDT_SOL">USDT SOL</option>
+        <option value="BTC">BTC</option>
+        <option value="ETH">ETH</option>
+        <option value="LTC">LTC</option>
+    </select>
+    
+    <div style="color:#6ab2f2; margin-bottom:7px"><b>Сумма в этой валюте:</b> <b id="converted_amount">...</b></div>
+    
+    <div style="margin-bottom:7px">
+        <span class="tooltip">
+            <div class="glass-status-btn">
+                <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Magnifying%20Glass%20Tilted%20Right.webp?raw=true" style="width:20px; vertical-align:middle"> Статус: ожидание оплаты [?]
+            </div>
+            <span class="tooltiptext">
+                <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Money%20With%20Wings.webp?raw=true" style="width:70px;">
+                <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Symbols/Currency%20Exchange.webp?raw=true" style="width:70px;">
+                <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Identification%20Card.webp?raw=true" style="width:70px;"><br>
+                Карта будет активирована автоматически когда транзакция получит как минимум 4 подтверждения сети.
+            </span>
+        </span>
+    </div>
+    
+    <div class="address-box" id="copy_address">
+        <b id="wallet_address">...</b>
+    </div>
+
+    <div class="qr-glow-wrapper">
+        <div id="qrcode"></div>
+    </div>
+    
+    <div id="promo_area" style="position: relative; bottom: 5px; z-index: 2; text-align:center;">
+        <div id="promo_label" style="color:#fcf183; font-size:13px; margin-bottom:5px;">
+            <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Activity/Ticket.webp?raw=true" style="width:20px; vertical-align:middle"> <b>Есть промокод? Введи его ниже!</b>
+        </div>
+
+        <input id="promo_input" placeholder="...." style="width:25%; padding:10px; border-radius:4px; border:1px solid #6ab2f2; font-size:16px;background:#253648; color:#6ab2f2;">
+        
+        <button id="promo_btn" style="padding:10px 20px; font-size:16px; border-radius:4px; background:#6ab2f2; border: none; color: white;">
+            <b>Применить</b>
+        </button>
+    </div>
+
+    <div id="confetti-container" style="position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; overflow:hidden;"></div>
+
+    <br><br><br>
+
+  <div style="color:#17212b; font-size:13px; margin-bottom:5px;"> ..... </div>
+
+    
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/kjua@0.6.0/dist/kjua.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const screens = {
+        welcome: document.getElementById('welcome'),
+        choose: document.getElementById('choose'),
+        payment: document.getElementById('payment')
+    };
+    const loader = document.getElementById('loader');
+    let selected = { name: null, price: 0, discount: 0 };
+    
+    // Предзагрузка картинок для тултипов
+    const preloadImages = [
+        'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Shopping%20Bags.webp?raw=true',
+        'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Purse.webp?raw=true',
+        'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Shopping%20Cart.webp?raw=true',
+        'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Pencil.webp?raw=true',
+        'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Activity/Party%20Popper.webp?raw=true',
+        'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Symbols/Cross%20Mark.webp?raw=true',
+        "https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Activity/Ticket.webp?raw=true",
+        "https://github.com/HuntersNetPlus/MaxSwap/blob/main/CupAnimation.webp?raw=true"
+    ];
+    preloadImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+ 
+    
+    const wallets = {
+        USDT_TRC20: "TVis1d6QARhWBQ6XZmisD2oSWGnqFM2qzX",
+        USDT_ERC20: "0xaacE295640C15344C6a2DC934a3AACcD4e23cc20",
+        USDT_SOL: "AVQJ4s1Y9BrtEmnH5WrxPT818YibUJsaR4uU6Aiht647",
+        BTC: "bc1qrhqsqsds47hycq0zkpx8fdvwfyu0hey843lz6j",
+        ETH: "0xaacE295640C15344C6a2DC934a3AACcD4e23cc20",
+        LTC: "LS2Pg4V8AhaQ1FRweGUHfkBxtwFAbJ6Dpy",
+        USDC: "0xaacE295640C15344C6a2DC934a3AACcD4e23cc20"
+    };
+
+    function openScreen(id) {
+        Object.values(screens).forEach(s => s.classList.remove('active'));
+        loader.style.display = 'flex';
+        setTimeout(() => {
+            loader.style.display = 'none';
+            screens[id].classList.add('active');
+        }, 900);
+    }
+
+    function selectOption(name, price) {
+        const discount = price * 0.5;
+        
+        selected = { 
+            name, 
+            price,
+            discount
+        };
+        
+        document.getElementById('pay_title').innerText = name;
+        document.getElementById('price_usdt').innerText = price;
+        openScreen('payment');
+        
+        setTimeout(() => {
+            updateConversion();
+        }, 250);
+    }
+
+    async function updateConversion() {
+        const cur = document.getElementById("currency").value;
+
+        const qEl = document.getElementById('qrcode');
+        qEl.innerHTML = "";
+
+        if (wallets[cur]) {
+            const qrSvg = kjua({
+                render: 'svg',
+                text: wallets[cur],
+                size: 250,
+                fill: '#6ab2f2',
+                back: 'transparent',
+                rounded: 0,
+                quiet: 1
+            });
+            qEl.appendChild(qrSvg);
+        }
+
+        document.getElementById('wallet_address').innerText = wallets[cur] || '—';
+
+        if (cur.startsWith("USDT")) {
+            document.getElementById('converted_amount').innerText = `${selected.price} USDT`;
+            return;
+        }
+
+        try {
+            const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,usd-coin&vs_currencies=usd");
+            const data = await res.json();
+            const priceCryptoUSD = {
+                BTC: data.bitcoin?.usd || null,
+                ETH: data.ethereum?.usd || null,
+                LTC: data.litecoin?.usd || null,
+                USDC: data["usd-coin"]?.usd || null
+            };
+
+            const rate = priceCryptoUSD[cur];
+            if (!rate) {
+                document.getElementById('converted_amount').innerText = "Курс недоступен";
+                return;
+            }
+
+            const converted = (selected.price / rate).toFixed(6);
+            document.getElementById('converted_amount').innerText = `${converted} ${cur}`;
+        } catch (e) {
+            console.warn(e);
+            document.getElementById('converted_amount').innerText = "Ошибка загрузки курса";
+        }
+    }
+
+    // Кнопка открытия
+    document.getElementById('welcomeBtn').addEventListener('click', () => openScreen('choose'));
+
+    // Выбор опции
+    document.querySelectorAll('#choose .option').forEach(opt => {
+        opt.addEventListener('click', () => selectOption(opt.dataset.name, parseFloat(opt.dataset.price)));
+    });
+
+    // Смена валюты
+    document.getElementById('currency').addEventListener('change', updateConversion);
+
+    // Копирование адреса
+    document.getElementById('copy_address').addEventListener('click', function() {
+        const text = document.getElementById('wallet_address').innerText;
+        if (!text || text === '—') return;
+        navigator.clipboard.writeText(text).then(() => {
+            this.classList.add("copied");
+            setTimeout(() => this.classList.remove("copied"), 2000);
+        }).catch(()=>{ /* ignore */ });
+    });
+
+    // Тултипы
+    document.querySelectorAll('.tooltip').forEach(t => {
+        t.addEventListener('click', function(e) {
+            this.classList.add('show');
+            setTimeout(() => {
+                this.classList.remove('show');
+            }, 9000);
+        });
+    });
+
+    // ПРОМОКОД
+    const VALID_PROMOS = ["VARLAMOV", "ВАРЛАМОВ", "КАЦ", "KATZ", "ФРОНТ", "СВОБОДА", "SWAP"];
+    
+    const promoInput = document.getElementById("promo_input");
+    promoInput.addEventListener('input', () => {
+        promoInput.value = promoInput.value.toUpperCase();
+    });
+    
+    const promoBtn = document.getElementById("promo_btn");
+    const promoLabel = document.getElementById("promo_label");
+    const confettiContainer = document.getElementById("confetti-container");
+
+    promoBtn.addEventListener("click", () => {
+        const code = promoInput.value.trim().toUpperCase();
+
+        if (!code) {
+            showGlassToast(`
+                <div style="text-align:center;">
+                   <div><img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Pencil.webp?raw=true" style="width:70px;"><br>Введите корректный промокод!</div>
+                </div>
+            `);
+            return;
+        }
+
+        if (VALID_PROMOS.includes(code)) {
+            const discount = selected.discount;
+            
+            promoLabel.innerHTML = '<img src="https://github.com/HuntersNetPlus/MaxSwap/blob/main/CupAnimation.webp?raw=true" style="width:20px;vertical-align:middle;"> <b> Промокод успешно активирован!</b>';
+            promoLabel.classList.add("gold-glow");
+
+            showGlassToast(`
+                <div style="text-align:center;">
+                    <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Activity/Party%20Popper.webp?raw=true" style="width:70px;"><br>
+                    <div><b>Промокод ${code} успешно принят!</b><br><br> После активации карты на баланс будет дополнительно зачислено <br> ${discount} USD! <br><br> <b>Этот промокод действует 24 часа!</b></div>
+                </div>
+            `);
+
+            launchConfetti();
+            
+          // Отключаем возможность повторного ввода
+    promoInput.disabled = true;
+    promoBtn.disabled = true;
+    promoInput.style.opacity = '0.5';
+    promoBtn.style.opacity = '0.5';
+}   
+          
+         else {
+            promoLabel.innerHTML = '<img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Activity/Ticket.webp?raw=true" style="width:20px; vertical-align:middle"> <b>Есть промокод? Введи его ниже!</b>';
+            promoLabel.classList.remove("gold-glow");
+
+            showGlassToast(`
+                <div style="text-align:center;">
+                    <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Symbols/Cross%20Mark.webp?raw=true" style="width:70px;"> <br>
+                    <div>Введён некорректный промокод!</div>
+                </div>
+            `, 2000);
+        }
+    });
+
+    // Стеклянный тултип
+    let toast = null;
+    function showGlassToast(htmlContent, duration = 0) {
+        if (toast) toast.remove();
+
+        toast = document.createElement("div");
+        toast.className = "tooltip-glass";
+        toast.innerHTML = htmlContent;
+        document.body.appendChild(toast);
+
+        function close() {
+            if (toast) toast.remove();
+            toast = null;
+            document.removeEventListener("pointerdown", close);
+            if (timeoutId) clearTimeout(timeoutId);
+        }
+
+        let timeoutId = null;
+        if (duration > 0) {
+            timeoutId = setTimeout(close, duration);
+        } else {
+            setTimeout(() => {
+                document.addEventListener("pointerdown", close);
+            }, 30);
+        }
+    }
+
+    // Конфетти
+    function launchConfetti() {
+        confettiContainer.innerHTML = "";
+
+        for (let i = 0; i < 90; i++) {
+            const c = document.createElement("div");
+            c.className = "confetti-piece";
+
+            const colors = ["#ff4757", "#ffa502", "#2ed573", "#1e90ff", "#ff6b81"];
+            c.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+            c.style.left = (Math.random() * 100) + "%";
+            c.style.top = "100%";
+
+            confettiContainer.appendChild(c);
+
+            const dx = (Math.random() - 0.5) * 600;
+            const dy = -600 - Math.random() * 400;
+
+            c.animate([
+                { transform: "translate(0,0) rotate(0deg)", opacity: 1 },
+                { transform: `translate(${dx}px, ${dy}px) rotate(360deg)`, opacity: 0 }
+            ], {
+                duration: 3200 + Math.random() * 700,
+                easing: "cubic-bezier(.2,.7,.2,1)"
+            });
+
+            setTimeout(() => c.remove(), 5000);
+        }
+    }
+
+    // Слайдшоу
+    const slides = document.querySelectorAll(".slide");
+    let index = 0;
+    const total = slides.length;
+
+    function nextSlide() {
+        if (total === 0) return;
+        
+        const current = slides[index];
+        current.classList.remove("active");
+        current.classList.add("out");
+
+        index = (index + 1) % total;
+        const next = slides[index];
+        next.classList.remove("out");
+        next.classList.add("active");
+    } 
+
+    setInterval(nextSlide, 3000);
+
+}); // КОНЕЦ DOMContentLoaded
+
+</script>
+
+</body>
+</html>
