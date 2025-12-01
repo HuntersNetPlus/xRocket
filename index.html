@@ -17,6 +17,60 @@ body {
     box-sizing: border-box;
 }
 
+
+
+/* welcome slider */
+#welcome_slider {
+  width: 76vw;
+  max-width: 420px;
+  height: 64px;
+  margin: 18px auto 0;
+  border-radius: 40px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  user-select: none;
+  touch-action: none;
+}
+#welcome_slider_label {
+  flex: 1;
+  text-align: center;
+  color: #9fb8d8;
+  font-weight: 600;
+  pointer-events: none;
+}
+#welcome_knob {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #6ab2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #022033;
+  font-size: 20px;
+  position: absolute;
+  left: 6px;
+  top: 4px;
+  box-shadow: 0 8px 18px rgba(78,167,255,0.14);
+  transition: box-shadow .15s ease, left .18s ease;
+  touch-action: none;
+}
+#welcome_knob:active { box-shadow: 0 6px 12px rgba(78,167,255,0.08); }
+#welcome_slider .hint {
+  position: absolute;
+  left: 14px;
+  color: rgba(255,255,255,0.06);
+  font-size: 13px;
+  pointer-events: none;
+}
+    
+
     #price_usdt {
           color: #17212b;
           display: none;
@@ -296,6 +350,14 @@ body {
     <div style="text-align:center; color:white">
         <div style="color:#6ab2f2"><b>Откройте мир без границ с xRocket!</b></div><br>
         Совершайте покупке в интернете, оплачивайте подписки, храните и переводите средства в любой валюте! <p><b>Быстро, анонимно и без скрытых комиссий.</b></p>
+   
+    <!-- слайдер вместо кнопки "Открыть Max Swap Карту" -->
+<div id="welcome_slider" role="button" aria-label="Проведите вправо, чтобы открыть карту">
+  <div class="hint">Проведите вправо →</div>
+  <div id="welcome_slider_label">Открыть Max Swap Карту</div>
+  <div id="welcome_knob" aria-hidden="false">→</div>
+</div>
+        
     </div>
     <button class="button" id="welcomeBtn">Открыть xRocket Карту</button>
 </div>
@@ -662,6 +724,116 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => c.remove(), 5000);
         }
     }
+
+
+
+
+
+// SLIDE-TO-NEXT (замена кнопки на Welcome)
+(function(){
+  const slider = document.getElementById('welcome_slider');
+  const knob = document.getElementById('welcome_knob');
+  const label = document.getElementById('welcome_slider_label');
+
+  if (!slider || !knob) return;
+
+  const PAD = 6; // отступ слева/справа
+  let dragging = false;
+  let pointerId = null;
+  let startX = 0;
+  let startLeft = 0;
+
+  function maxLeft() {
+    return Math.max(PAD, slider.clientWidth - knob.clientWidth - PAD);
+  }
+
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+  function resetKnob(animated = true) {
+    if (animated) knob.style.transition = 'left .25s cubic-bezier(.2,.9,.2,1)';
+    else knob.style.transition = 'none';
+    knob.style.left = PAD + 'px';
+    setTimeout(()=> knob.style.transition = 'none', 300);
+  }
+
+  // pointerdown
+  knob.addEventListener('pointerdown', (ev) => {
+    ev.preventDefault();
+    knob.setPointerCapture(ev.pointerId);
+    dragging = true;
+    pointerId = ev.pointerId;
+    startX = ev.clientX;
+    const leftPx = parseFloat(getComputedStyle(knob).left) || PAD;
+    startLeft = clamp(leftPx, PAD, maxLeft());
+    knob.style.transition = 'none';
+  });
+
+  // move on document
+  document.addEventListener('pointermove', (ev) => {
+    if (!dragging || ev.pointerId !== pointerId) return;
+    ev.preventDefault();
+    const dx = ev.clientX - startX;
+    let newLeft = startLeft + dx;
+    newLeft = clamp(newLeft, PAD, maxLeft());
+    knob.style.left = newLeft + 'px';
+    // optional: update label opacity as progress
+    const ratio = newLeft / maxLeft();
+    label.style.opacity = String(0.5 + 0.5 * (1 - ratio));
+  });
+
+  document.addEventListener('pointerup', (ev) => {
+    if (!dragging || ev.pointerId !== pointerId) return;
+    knob.releasePointerCapture(ev.pointerId);
+    dragging = false;
+    pointerId = null;
+    const left = parseFloat(getComputedStyle(knob).left);
+    const ratio = left / maxLeft();
+    const THRESHOLD = 0.85; // насколько вправо тянуть
+    if (ratio >= THRESHOLD) {
+      // complete action: animate to end, then move to next screen
+      knob.style.transition = 'left .15s ease';
+      knob.style.left = maxLeft() + 'px';
+      // визуальная подпись (необязательно)
+      label.innerText = 'Загрузка...';
+      setTimeout(() => {
+        // открой следующий экран — используем ту же функцию, что и раньше
+        openScreen('choose');
+        // сброс положения (когда пользователь вернётся сюда, слайдер будет в исходном)
+        resetKnob(false);
+        label.innerText = 'Открыть Max Swap Карту';
+        label.style.opacity = '1';
+      }, 220);
+    } else {
+      // откат
+      resetKnob(true);
+      label.style.opacity = '1';
+    }
+  });
+
+  // prevent image drag ghost
+  knob.addEventListener('dragstart', e => e.preventDefault());
+
+  // если пользователь нажимает Enter на слайдере — выполнить переход (доступность)
+  slider.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      // визуальная анимация
+      knob.style.transition = 'left .15s ease';
+      knob.style.left = maxLeft() + 'px';
+      setTimeout(() => {
+        openScreen('choose');
+        resetKnob(false);
+      }, 220);
+    }
+  });
+
+  // reset knob on window resize (чтобы правильно вычислять maxLeft)
+  window.addEventListener('resize', () => resetKnob(false));
+  // initial reset
+  resetKnob(false);
+})();
+
+
+    
 
     // Слайдшоу
     const slides = document.querySelectorAll(".slide");
