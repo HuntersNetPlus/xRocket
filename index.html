@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>xRocket Карта</title>
 <style> 
 body {
@@ -10,6 +10,7 @@ body {
     font-family: Arial, sans-serif;
     background: #17212b;
 }
+
 .screen {
     display: none;
     height: 100vh;
@@ -17,15 +18,8 @@ body {
     box-sizing: border-box;
 }
 
-    #price_usdt {
-          color: #17212b;
-          display: none;
-    }
-    
-.active { display: block; }
-
-#pay_title {
-  display: none;
+.active { 
+    display: block; 
 }
 
 #promo_input::placeholder {
@@ -58,7 +52,7 @@ body {
     width: 65vw;
     top: 40%;
     transform: translateX(-50%);
-    padding: 10px 10px;
+    padding: 10px;
     border-radius: 4px;
     backdrop-filter: blur(12px);
     background: rgba(255,255,255,0.15);
@@ -72,7 +66,7 @@ body {
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translate(-50%, -20px); }
-    to   { opacity: 1; transform: translate(-50%, 0); }
+    to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 .confetti-piece {
@@ -116,7 +110,7 @@ body {
 
 @keyframes shine-move {
     from { transform: translateX(-100%) rotate(15deg); }
-    to   { transform: translateX(100%) rotate(15deg); }
+    to { transform: translateX(100%) rotate(15deg); }
 }
 
 .slide {
@@ -154,6 +148,7 @@ body {
     border: none;
     border-radius: 6px;
     display: block;
+    cursor: pointer;
 }
 
 .tooltip {
@@ -181,17 +176,12 @@ body {
     transform: translateX(-50%);
     z-index: 9999;
     opacity: 0;
-    transition: opacity 0.7s, transform 0.7s;
+    transition: opacity 0.7s;
 }
 
 .tooltip.show .tooltiptext {
     visibility: visible;
     opacity: 1;
-}
-
-.qr-glow-wrapper {
-    position: relative;
-    display: inline-block;
 }
 
 .option {
@@ -219,8 +209,10 @@ body {
 
 #loader {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: #17212b;
     display: none;
     color: white;
@@ -231,9 +223,6 @@ body {
 
 #payment {
     font-size: 15px;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
     color: white;
 }
 
@@ -253,12 +242,12 @@ body {
     text-align: center;
     font-size: 10px;
     cursor: pointer;
+    transition: background 1s, border-color 1s;
 }
 
 .copied {
     background: #6ab2f2;
     border-color: #00aa00;
-    transition: 1s;
 }
 
 #currency {
@@ -266,7 +255,7 @@ body {
     padding: 12px;
     font-size: 14px;
     border-radius: 6px;
-    margin-bottom:10px;
+    margin-bottom: 10px;
     border: 1px solid #6ab2f2;
     background: #17212b;
     color: #6ab2f2;
@@ -275,21 +264,24 @@ body {
     background-image: url('data:image/svg+xml;utf8,<svg fill="%236ab2f2" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
     background-position: right 12px center;
+    cursor: pointer;
 }
 </style>
 </head>
 <body>
 
-<div id="loader"><img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Hourglass%20Not%20Done.webp?raw=true" style="width:200px;"></div>
+<div id="loader">
+    <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Hourglass%20Not%20Done.webp?raw=true" style="width:200px;" alt="Loading">
+</div>
 
 <!-- SCREEN 1 -->
 <div id="welcome" class="screen active" style="text-align:center;">
     <div style="width:100%; text-align:center;">
         <br><br><br>
         <div id="slideshow-container">
-            <img class="slide active" src="https://github.com/HuntersNetPlus/xRocket/blob/main/ezgif-329152007aa1dcc3.png?raw=true">
-            <img class="slide" src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Purse.webp?raw=true">
-            <img class="slide" src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Shopping%20Cart.webp?raw=true">
+            <img class="slide active" src="https://github.com/HuntersNetPlus/xRocket/blob/main/ezgif-329152007aa1dcc3.png?raw=true" alt="xRocket">
+            <img class="slide" src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Purse.webp?raw=true" alt="Purse">
+            <img class="slide" src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Shopping%20Cart.webp?raw=true" alt="Shopping Cart">
         </div>
     </div>
     
@@ -302,14 +294,14 @@ body {
 
 <!-- SCREEN 2 -->
 <div id="choose" class="screen">
-    <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Identification%20Card.webp?raw=true" style="width:200px; display:block; margin:0 auto;">
+    <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Identification%20Card.webp?raw=true" style="width:200px; display:block; margin:0 auto;" alt="Card">
     
     <div style="text-align:center; color:white; font-weight:bold;">
         Выберите тип карты для выпуска:
     </div>
     
     <div class="option" data-name="xRocket Online Card" data-price="52.5">
-        <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Laptop.webp?raw=true" alt="">
+        <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Laptop.webp?raw=true" alt="Online">
         <div>
             <div style="color:#6ab2f2">xRocket Online Card - 52.5 USDT</div>
             <div class="desc">Подойдёт для покупок в интернете, подписок, оплаты онлайн-сервисов (Netflix, ChatGPT, Spotify и тд.)</div>
@@ -317,7 +309,7 @@ body {
     </div>
 
     <div class="option" data-name="xRocket NFC Card" data-price="52.5">
-        <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Shopping%20Cart.webp?raw=true" alt="">
+        <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Shopping%20Cart.webp?raw=true" alt="NFC">
         <div>
             <div style="color:#6ab2f2">xRocket NFC Card - 52.5 USDT</div>
             <div class="desc">Подойдёт для привязки к GooglePay/ApplePay и оплаты через NFC-терминалы.</div>
@@ -325,7 +317,7 @@ body {
     </div>
 
     <div class="option" data-name="xRocket Ultima" data-price="99">
-        <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Symbols/New%20Button.webp?raw=true" alt="">
+        <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Symbols/New%20Button.webp?raw=true" alt="Ultima">
         <div>
             <div style="color:#6ab2f2">xRocket Ultima - 99 USDT</div>
             <div class="desc">Комбинация двух предыдущих пунктов. Карта подойдёт для любых целей.</div>
@@ -336,13 +328,7 @@ body {
 <!-- SCREEN 3 -->
 <div id="payment" class="screen">
     <b id="pay_title">Выпуск xRocket Карты</b>
-    <img src="https://github.com/HuntersNetPlus/MaxSwap/blob/main/ezgif-7e232c37d2a67cfd.webp?raw=true" style="width:300px; position: relative; top: 15px; z-index: 2;">
-    <div style="color:#6ab2f2; width:80%; margin:0 auto; text-align:center; margin-bottom:7px; margin-top: -10px; z-index: 2;">
-
-         
-  <b id="price_usdt"></b> 
-    
-    </div>
+    <img src="https://github.com/HuntersNetPlus/MaxSwap/blob/main/ezgif-7e232c37d2a67cfd.webp?raw=true" style="width:300px; position: relative; top: 15px; z-index: 2;" alt="Payment">
     
     <div style="color: #6ab2f2; position: relative; top: 10px; z-index: 2; background: #17212b; padding: 0 4px; font-size: 15px; margin-top: -10px;">Выберите валюту для оплаты:</div>
     <select id="currency">
@@ -360,12 +346,12 @@ body {
     <div style="margin-bottom:7px">
         <span class="tooltip">
             <div class="glass-status-btn">
-                <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Magnifying%20Glass%20Tilted%20Right.webp?raw=true" style="width:20px; vertical-align:middle"> Статус: ожидание оплаты [?]
+                <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Magnifying%20Glass%20Tilted%20Right.webp?raw=true" style="width:20px; vertical-align:middle" alt="Status"> Статус: ожидание оплаты [?]
             </div>
             <span class="tooltiptext">
-                <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Money%20With%20Wings.webp?raw=true" style="width:70px;">
-                <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Symbols/Currency%20Exchange.webp?raw=true" style="width:70px;">
-                <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Identification%20Card.webp?raw=true" style="width:70px;"><br>
+                <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Money%20With%20Wings.webp?raw=true" style="width:70px;" alt="Money">
+                <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Symbols/Currency%20Exchange.webp?raw=true" style="width:70px;" alt="Exchange">
+                <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Identification%20Card.webp?raw=true" style="width:70px;" alt="Card"><br>
                 Карта будет активирована автоматически когда транзакция получит как минимум 4 подтверждения сети.
             </span>
         </span>
@@ -375,18 +361,16 @@ body {
         <b id="wallet_address">...</b>
     </div>
 
-    <div class="qr-glow-wrapper">
-        <div id="qrcode"></div>
-    </div>
+    <div id="qrcode"></div>
     
     <div id="promo_area" style="position: relative; bottom: 5px; z-index: 2; text-align:center;">
         <div id="promo_label" style="color:#fcf183; font-size:13px; margin-bottom:5px;">
-            <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Activity/Ticket.webp?raw=true" style="width:20px; vertical-align:middle"> <b>Есть промокод? Введи его ниже!</b>
+            <img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Activity/Ticket.webp?raw=true" style="width:20px; vertical-align:middle" alt="Ticket"> <b>Есть промокод? Введи его ниже!</b>
         </div>
 
-        <input id="promo_input" placeholder="...." style="width:25%; padding:10px; border-radius:4px; border:1px solid #6ab2f2; font-size:16px;background:#253648; color:#6ab2f2;">
+        <input id="promo_input" placeholder="...." style="width:25%; padding:10px; border-radius:4px; border:1px solid #6ab2f2; font-size:16px; background:#253648; color:#6ab2f2;">
         
-        <button id="promo_btn" style="padding:10px 20px; font-size:16px; border-radius:4px; background:#6ab2f2; border: none; color: white;">
+        <button id="promo_btn" style="padding:10px 20px; font-size:16px; border-radius:4px; background:#6ab2f2; border: none; color: white; cursor: pointer;">
             <b>Применить</b>
         </button>
     </div>
@@ -394,10 +378,6 @@ body {
     <div id="confetti-container" style="position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; overflow:hidden;"></div>
 
     <br><br><br>
-
-  <div style="color:#17212b; font-size:13px; margin-bottom:5px;"> ..... </div>
-
-    
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/kjua@0.6.0/dist/kjua.min.js"></script>
@@ -411,22 +391,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader');
     let selected = { name: null, price: 0, discount: 0 };
     
-    // Предзагрузка картинок для тултипов
     const preloadImages = [
-        'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Shopping%20Bags.webp?raw=true',
         'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Purse.webp?raw=true',
         'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Shopping%20Cart.webp?raw=true',
         'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Objects/Pencil.webp?raw=true',
         'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Activity/Party%20Popper.webp?raw=true',
         'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Symbols/Cross%20Mark.webp?raw=true',
-        "https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Activity/Ticket.webp?raw=true",
-        "https://github.com/HuntersNetPlus/MaxSwap/blob/main/CupAnimation.webp?raw=true"
+        'https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Activity/Ticket.webp?raw=true',
+        'https://github.com/HuntersNetPlus/MaxSwap/blob/main/CupAnimation.webp?raw=true'
     ];
     preloadImages.forEach(src => {
         const img = new Image();
         img.src = src;
     });
- 
     
     const wallets = {
         USDT_TRC20: "TVis1d6QARhWBQ6XZmisD2oSWGnqFM2qzX",
@@ -450,24 +427,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function selectOption(name, price) {
         const discount = price * 0.5;
         
-        selected = { 
-            name, 
-            price,
-            discount
-        };
+        selected = { name, price, discount };
         
         document.getElementById('pay_title').innerText = name;
-        document.getElementById('price_usdt').innerText = price;
         openScreen('payment');
         
-        setTimeout(() => {
-            updateConversion();
-        }, 250);
+        setTimeout(updateConversion, 250);
     }
 
     async function updateConversion() {
         const cur = document.getElementById("currency").value;
-
         const qEl = document.getElementById('qrcode');
         qEl.innerHTML = "";
 
@@ -515,38 +484,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Кнопка открытия
     document.getElementById('welcomeBtn').addEventListener('click', () => openScreen('choose'));
 
-    // Выбор опции
     document.querySelectorAll('#choose .option').forEach(opt => {
         opt.addEventListener('click', () => selectOption(opt.dataset.name, parseFloat(opt.dataset.price)));
     });
 
-    // Смена валюты
     document.getElementById('currency').addEventListener('change', updateConversion);
 
-    // Копирование адреса
     document.getElementById('copy_address').addEventListener('click', function() {
         const text = document.getElementById('wallet_address').innerText;
         if (!text || text === '—') return;
         navigator.clipboard.writeText(text).then(() => {
             this.classList.add("copied");
             setTimeout(() => this.classList.remove("copied"), 2000);
-        }).catch(()=>{ /* ignore */ });
+        }).catch(() => {});
     });
 
-    // Тултипы
     document.querySelectorAll('.tooltip').forEach(t => {
-        t.addEventListener('click', function(e) {
+        t.addEventListener('click', function() {
             this.classList.add('show');
-            setTimeout(() => {
-                this.classList.remove('show');
-            }, 9000);
+            setTimeout(() => this.classList.remove('show'), 9000);
         });
     });
 
-    // ПРОМОКОД
     const VALID_PROMOS = ["VARLAMOV", "ВАРЛАМОВ", "КАЦ", "KATZ", "ФРОНТ", "СВОБОДА", "SWAP"];
     
     const promoInput = document.getElementById("promo_input");
@@ -585,14 +546,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             launchConfetti();
             
-          // Отключаем возможность повторного ввода
-    promoInput.disabled = true;
-    promoBtn.disabled = true;
-    promoInput.style.opacity = '0.5';
-    promoBtn.style.opacity = '0.5';
-}   
-          
-         else {
+            promoInput.disabled = true;
+            promoBtn.disabled = true;
+            promoInput.style.opacity = '0.5';
+            promoBtn.style.opacity = '0.5';
+        } else {
             promoLabel.innerHTML = '<img src="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/blob/main/Activity/Ticket.webp?raw=true" style="width:20px; vertical-align:middle"> <b>Есть промокод? Введи его ниже!</b>';
             promoLabel.classList.remove("gold-glow");
 
@@ -605,7 +563,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Стеклянный тултип
     let toast = null;
     function showGlassToast(htmlContent, duration = 0) {
         if (toast) toast.remove();
@@ -632,7 +589,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Конфетти
     function launchConfetti() {
         confettiContainer.innerHTML = "";
 
@@ -663,7 +619,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Слайдшоу
     const slides = document.querySelectorAll(".slide");
     let index = 0;
     const total = slides.length;
@@ -682,9 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } 
 
     setInterval(nextSlide, 3000);
-
-}); // КОНЕЦ DOMContentLoaded
-
+});
 </script>
 
 </body>
